@@ -1,0 +1,58 @@
+name: CI/CD with SonarCloud and Vercel
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test-analyze:
+    name: Build, Test & SonarCloud Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests with coverage
+      run: npm run test:coverage
+
+    - name: Upload coverage to SonarCloud
+      uses: SonarSource/sonarcloud-github-action@master
+      with:
+        organization: mon-org-sonarcloud
+        projectKey: my-api-project
+        token: ${{ secrets.SONAR_TOKEN }}
+      env:
+        SONAR_SCANNER_OPTS: "-Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+
+  deploy-vercel:
+    name: Deploy to Vercel
+    needs: build-test-analyze
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build Project
+      run: echo "No build step for pure Node.js"
+
+    - name: Deploy to Vercel
+      run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
