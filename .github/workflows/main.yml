@@ -24,15 +24,18 @@ jobs:
 
     - name: Run tests with coverage
       run: npm run test:coverage
-
-    - name: Upload coverage to SonarCloud
-      uses: SonarSource/sonarcloud-github-action@master
-      with:
-        organization: mon-org-sonarcloud
-        projectKey: my-api-project
-        token: ${{ secrets.SONAR_TOKEN }}
-      env:
-        SONAR_SCANNER_OPTS: "-Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+      
+  sonarqube:
+    name: SonarQube
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   deploy-vercel:
     name: Deploy to Vercel
