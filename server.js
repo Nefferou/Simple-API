@@ -11,6 +11,7 @@ app.get('/status', (req, res) => {
     res.json({ status: 'OK' });
 });
 
+/*
 // Démarrage local
 if (require.main === module) {
     const port = process.env.PORT || 3000;
@@ -20,4 +21,9 @@ if (require.main === module) {
 }
 
 const serverless = require('serverless-http');
-module.exports = serverless(app);
+module.exports = serverless(app);*/
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Server running locally on port ${port}`);
+});
