@@ -58,4 +58,5 @@ jobs:
       run: echo "No build step for pure Node.js"
 
     - name: Deploy to Vercel
-      run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+      run: npx vercel --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+
