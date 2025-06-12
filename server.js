@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
@@ -12,8 +11,13 @@ app.get('/status', (req, res) => {
     res.json({ status: 'OK' });
 });
 
-app.listen(port, () => {
-    console.log(`API listening on port ${port}`);
-});
+// Démarrage local
+if (require.main === module) {
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+        console.log(`Server running locally on port ${port}`);
+    });
+}
 
-module.exports = app;
+const serverless = require('serverless-http');
+module.exports = serverless(app);
